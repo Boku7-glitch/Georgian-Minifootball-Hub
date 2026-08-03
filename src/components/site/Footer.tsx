@@ -1,13 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
-import logo from "@/assets/gmf-logo.svg.asset.json";
+import { miniFootballLogo } from "@/assets/logos";
 
 export function Footer() {
   return (
     <footer className="bg-[color:var(--navy)] text-white/80 mt-24">
       <div className="container-x py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
         <div>
-          <img src={logo.url} alt="GMF" className="h-16 brightness-0 invert mb-4" />
+          <img src={miniFootballLogo} alt="GMF" className="h-16 brightness-0 invert mb-4" />
           <p className="text-sm leading-relaxed">
             Georgian Minifootball Federation — the official governing body for minifootball in Georgia.
           </p>
