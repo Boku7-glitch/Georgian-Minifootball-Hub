@@ -49,7 +49,7 @@ export const gallery = [
   { src: gal6, alt: "Referee on pitch", h: "short" as const },
 ];
 
-// Super League standings (Real Sofascore Data)
+// Super League standings
 export type Standing = {
   pos: number;
   club: string;

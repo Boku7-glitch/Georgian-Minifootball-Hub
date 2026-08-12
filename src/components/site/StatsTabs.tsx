@@ -28,7 +28,6 @@ export function StatsTabs() {
   const [activeTab, setActiveTab] = useState<MainTab>("standings");
   const [activeStatTab, setActiveStatTab] = useState<StatSubTab>("scorers");
 
-  // დამხმარე ფუნქცია გუნდის ლოგოს მოსაძებნად
   const getTeamLogo = (teamName: string) => {
     const standing = standings.find(
       s => s.club.toLowerCase() === teamName.toLowerCase() ||
@@ -37,7 +36,6 @@ export function StatsTabs() {
     return standing?.logo;
   };
 
-  // დინამიკური სტატისტიკის გამოთვლა არჩეული ტაბის მიხედვით
   const currentStatData = useMemo(() => {
     let field: keyof Pick<PlayerStat, "goals" | "assists" | "yellowCards" | "redCards"> = "goals";
     let accent: "yellow" | "red" | undefined = undefined;
@@ -78,7 +76,6 @@ export function StatsTabs() {
   return (
     <section className="container-x py-12 md:py-16">
       <div className="rounded-2xl bg-card shadow-card overflow-hidden">
-        {/* მთავარი ტაბების მენიუ */}
         <div className="bg-[color:var(--navy)] overflow-x-auto">
           <div className="flex w-full justify-center min-w-max">
             {mainTabs.map((tab) => {
@@ -107,7 +104,6 @@ export function StatsTabs() {
           </div>
         </div>
 
-        {/* კონტენტის ზონა */}
         <div className="p-4 md:p-6 animate-fade-in-up" key={activeTab}>
 
           {/* STANDINGS */}
@@ -149,7 +145,7 @@ export function StatsTabs() {
             </div>
           )}
 
-          {/* CALENDARS - გამოვიძახეთ ახალი კომპონენტი */}
+          {/* CALENDARS */}
           {activeTab === "calendars" && (
             <div className="animate-fade-in-up">
               <ScheduleCalendar />

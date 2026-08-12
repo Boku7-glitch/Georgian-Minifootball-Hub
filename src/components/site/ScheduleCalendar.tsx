@@ -29,9 +29,6 @@ interface Match {
   status: string;
 }
 
-// ვამოწმებთ კონსოლში, რა მოდის იმპორტიდან
-console.log("Lentehi logo imported as:", lentehiLogo);
-
 const logoMap: Record<string, string> = {
   'adjara group': ajaraLogo,
   'ajara': ajaraLogo,
