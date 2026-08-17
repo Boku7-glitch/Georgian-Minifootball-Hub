@@ -17,6 +17,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TeamsTeamIdRouteImport } from './routes/teams.$teamId'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminStatsRouteImport } from './routes/_authenticated/admin.stats'
@@ -63,6 +64,11 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamsTeamIdRoute = TeamsTeamIdRouteImport.update({
+  id: '/teams/$teamId',
+  path: '/teams/$teamId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/super-league': typeof SuperLeagueRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/teams/$teamId': typeof TeamsTeamIdRoute
   '/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/national-teams': typeof NationalTeamsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/super-league': typeof SuperLeagueRoute
+  '/teams/$teamId': typeof TeamsTeamIdRoute
   '/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/super-league': typeof SuperLeagueRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/teams/$teamId': typeof TeamsTeamIdRoute
   '/_authenticated/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/_authenticated/admin/gallery': typeof AuthenticatedAdminGalleryRoute
   '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRoute
@@ -172,6 +181,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/super-league'
     | '/admin'
+    | '/teams/$teamId'
     | '/admin/banners'
     | '/admin/gallery'
     | '/admin/news'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/national-teams'
     | '/sitemap.xml'
     | '/super-league'
+    | '/teams/$teamId'
     | '/admin/banners'
     | '/admin/gallery'
     | '/admin/news'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/super-league'
     | '/_authenticated/admin'
+    | '/teams/$teamId'
     | '/_authenticated/admin/banners'
     | '/_authenticated/admin/gallery'
     | '/_authenticated/admin/news'
@@ -224,6 +236,7 @@ export interface RootRouteChildren {
   NationalTeamsRoute: typeof NationalTeamsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SuperLeagueRoute: typeof SuperLeagueRoute
+  TeamsTeamIdRoute: typeof TeamsTeamIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -282,6 +295,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/teams/$teamId': {
+      id: '/teams/$teamId'
+      path: '/teams/$teamId'
+      fullPath: '/teams/$teamId'
+      preLoaderRoute: typeof TeamsTeamIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -387,6 +407,7 @@ const rootRouteChildren: RootRouteChildren = {
   NationalTeamsRoute: NationalTeamsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SuperLeagueRoute: SuperLeagueRoute,
+  TeamsTeamIdRoute: TeamsTeamIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

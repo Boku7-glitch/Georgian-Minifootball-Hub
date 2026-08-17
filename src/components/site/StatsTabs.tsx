@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Search, ChevronUp, ChevronDown, Trophy, BarChart3, Calendar, History, Target, Award, AlertTriangle, ShieldCheck } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 import { standings, playerStats, matchResults, type Standing, type PlayerStat, type MatchResult } from "@/data/mock";
 import { cn } from "@/lib/utils";
@@ -357,7 +358,11 @@ function StandingsTable({ rows }: { rows: Standing[] }) {
                   {r.pos}.
                 </td>
                 <td className="px-3 py-3">
-                  <div className="flex items-center gap-3">
+                  <Link
+                    to="/teams/$teamId"
+                    params={{ teamId: r.club.toLowerCase().replace(/\s+/g, "-") }}
+                    className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+                  >
                     {r.logo ? (
                       <img src={r.logo} alt={r.club} className="h-7 w-7 object-contain shrink-0" />
                     ) : (
@@ -368,8 +373,8 @@ function StandingsTable({ rows }: { rows: Standing[] }) {
                         {r.short}
                       </span>
                     )}
-                    <span className="font-semibold">{r.club}</span>
-                  </div>
+                    <span className="font-semibold hover:underline group-hover:text-[color:var(--brand-red)] transition-colors">{r.club}</span>
+                  </Link>
                 </td>
                 <td className="px-3 py-3 text-center">{r.played}</td>
                 <td className="px-3 py-3 text-center">{r.w}</td>
