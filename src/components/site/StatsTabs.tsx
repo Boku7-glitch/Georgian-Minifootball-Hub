@@ -3,11 +3,24 @@ import { Search, ChevronUp, ChevronDown, Trophy, BarChart3, Calendar, History, T
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
-import { standings, playerStats, type Standing, type PlayerStat, type MatchResult } from "@/data/mock";
+import { type Standing, type PlayerStat, type MatchResult } from "@/data/mock";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { useLang } from "@/lib/i18n";
 import { ScheduleCalendar } from "./ScheduleCalendar";
+
+import {
+  ajaraLogo,
+  avlabariLogo,
+  derbyLogo,
+  everstoneLogo,
+  gfdfLogo,
+  glovoLogo,
+  iberiaLogo,
+  lentehiLogo,
+  oldStarsLogo,
+  saburtaloLogo,
+} from "@/assets/logos";
 
 type MainTab = "standings" | "statistics" | "calendars" | "results";
 type StatSubTab = "scorers" | "assists" | "yellow" | "red";
@@ -26,7 +39,6 @@ const statSubTabs: { key: StatSubTab; labelKey: string; icon: React.ComponentTyp
   { key: "red", labelKey: "stat.redCards", icon: AlertTriangle },
 ];
 
-// Helper to normalize team names (removes FC, FK, SC, punctuation, extra spaces)
 const normalizeTeamName = (name: string) =>
   name
     .toLowerCase()
@@ -34,12 +46,79 @@ const normalizeTeamName = (name: string) =>
     .replace(/\s+/g, "")
     .trim();
 
+const logoMap: Record<string, string> = {
+  'adjara group': ajaraLogo,
+  'ajara': ajaraLogo,
+  'grand avlabari': avlabariLogo,
+  'avlabari': avlabariLogo,
+  'derby': derbyLogo,
+  'everstone': everstoneLogo,
+  'gfdf': gfdfLogo,
+  'glovo': glovoLogo,
+  'fc glovo': glovoLogo,
+  'iberia': iberiaLogo,
+  'iberia 1999': iberiaLogo,
+  'lentehi': lentehiLogo,
+  'letekhi': lentehiLogo,
+  'lentekhi': lentehiLogo,
+  'lentechi': lentehiLogo,
+  'ლენტეხი': lentehiLogo,
+  'old stars': oldStarsLogo,
+  'saburtalo': saburtaloLogo,
+};
+
+const getTeamLogo = (teamName: string) => {
+  if (!teamName) return undefined;
+  const target = normalizeTeamName(teamName);
+
+  if (logoMap[target]) return logoMap[target];
+
+  for (const [key, logo] of Object.entries(logoMap)) {
+    const cleanKey = normalizeTeamName(key);
+    if (cleanKey === target || target.includes(cleanKey) || cleanKey.includes(target)) {
+      return logo;
+    }
+  }
+  return undefined;
+};
+
 export function StatsTabs() {
   const { t } = useLang();
   const [activeTab, setActiveTab] = useState<MainTab>("standings");
   const [activeStatTab, setActiveStatTab] = useState<StatSubTab>("scorers");
 
-  // Fetch completed matches live from Supabase
+  // 1. Live Standings from Supabase
+  const { data: dbStandings = [], isLoading: isStandingsLoading } = useQuery({
+    queryKey: ["standings"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("standings")
+        .select("*")
+        .order("pos", { ascending: true });
+
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const liveStandings: Standing[] = useMemo(() => {
+    return dbStandings.map((s: any) => ({
+      pos: Number(s.pos),
+      club: s.club,
+      short: s.short || s.club.slice(0, 2).toUpperCase(),
+      color: s.color || "#0B1F3A",
+      played: Number(s.played ?? 0),
+      w: Number(s.w ?? 0),
+      d: Number(s.d ?? 0),
+      l: Number(s.l ?? 0),
+      gf: Number(s.gf ?? 0),
+      ga: Number(s.ga ?? 0),
+      pts: Number(s.pts ?? 0),
+      logo: getTeamLogo(s.club),
+    }));
+  }, [dbStandings]);
+
+  // 2. Live Matches / Results from Supabase
   const { data: dbMatches = [], isLoading: isMatchesLoading } = useQuery({
     queryKey: ["matches", "results"],
     queryFn: async () => {
@@ -49,15 +128,11 @@ export function StatsTabs() {
         .eq("status", "completed")
         .order("round", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching match results:", error);
-        throw error;
-      }
+      if (error) throw error;
       return data ?? [];
     },
   });
 
-  // Map Supabase snake_case columns to MatchResult format
   const liveResults: MatchResult[] = useMemo(() => {
     return dbMatches.map((m: any) => ({
       id: String(m.id),
@@ -72,25 +147,35 @@ export function StatsTabs() {
     }));
   }, [dbMatches]);
 
-  // Bulletproof logo finder that matches FC Glovo <-> Glovo
-  const getTeamLogo = (teamName: string) => {
-    if (!teamName) return undefined;
-    const target = normalizeTeamName(teamName);
+  // 3. Live Player Statistics from Supabase
+  const { data: dbPlayers = [], isLoading: isPlayersLoading } = useQuery({
+    queryKey: ["players"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("players")
+        .select("*");
 
-    const standing = standings.find((s) => {
-      const clubName = normalizeTeamName(s.club);
-      const shortName = normalizeTeamName(s.short);
+      if (error) {
+        console.error("Error fetching players:", error);
+        throw error;
+      }
+      return data ?? [];
+    },
+  });
 
-      return (
-        clubName === target ||
-        shortName === target ||
-        clubName.includes(target) ||
-        target.includes(clubName)
-      );
-    });
-
-    return standing?.logo;
-  };
+  const livePlayers: PlayerStat[] = useMemo(() => {
+    return dbPlayers.map((p: any) => ({
+      id: Number(p.shirt_number || p.id),
+      name: p.name,
+      team: p.team,
+      position: p.position,
+      matchesPlayed: Number(p.matches_played ?? 0),
+      goals: Number(p.goals ?? 0),
+      assists: Number(p.assists ?? 0),
+      yellowCards: Number(p.yellow_cards ?? 0),
+      redCards: Number(p.red_cards ?? 0),
+    }));
+  }, [dbPlayers]);
 
   const currentStatData = useMemo(() => {
     let field: keyof Pick<PlayerStat, "goals" | "assists" | "yellowCards" | "redCards"> = "goals";
@@ -113,7 +198,7 @@ export function StatsTabs() {
       accent = "red";
     }
 
-    const sorted = [...playerStats]
+    const sorted = [...livePlayers]
       .filter((player) => player[field] > 0)
       .sort((a, b) => b[field] - a[field]);
 
@@ -127,7 +212,7 @@ export function StatsTabs() {
       valueLabel,
       accent,
     };
-  }, [activeStatTab, t]);
+  }, [activeStatTab, livePlayers, t]);
 
   return (
     <section className="container-x py-12 md:py-16">
@@ -142,7 +227,7 @@ export function StatsTabs() {
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
                   className={cn(
-                    "relative px-6 md:px-8 py-5 text-sm font-bold uppercase tracking-wider transition-colors flex items-center gap-2",
+                    "relative px-6 md:px-8 py-5 text-sm font-bold uppercase tracking-wider transition-colors flex items-center gap-2 cursor-pointer",
                     active ? "text-white" : "text-white/60 hover:text-white"
                   )}
                 >
@@ -163,7 +248,15 @@ export function StatsTabs() {
         <div className="p-4 md:p-6 animate-fade-in-up" key={activeTab}>
 
           {/* STANDINGS */}
-          {activeTab === "standings" && <StandingsTable rows={standings} />}
+          {activeTab === "standings" && (
+            isStandingsLoading ? (
+              <div className="flex justify-center items-center py-16">
+                <Loader2 className="h-8 w-8 animate-spin text-[color:var(--navy)]" />
+              </div>
+            ) : (
+              <StandingsTable rows={liveStandings} />
+            )
+          )}
 
           {/* STATISTICS */}
           {activeTab === "statistics" && (
@@ -177,7 +270,7 @@ export function StatsTabs() {
                       key={sub.key}
                       onClick={() => setActiveStatTab(sub.key)}
                       className={cn(
-                        "px-4 py-2 text-xs md:text-sm font-bold uppercase tracking-wider rounded-md transition-colors flex items-center gap-2",
+                        "px-4 py-2 text-xs md:text-sm font-bold uppercase tracking-wider rounded-md transition-colors flex items-center gap-2 cursor-pointer",
                         isActive
                           ? "bg-[color:var(--navy)] text-white"
                           : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
@@ -191,12 +284,18 @@ export function StatsTabs() {
               </div>
 
               <div className="animate-fade-in-up" key={activeStatTab}>
-                <PlayerTable
-                  rows={currentStatData.rows}
-                  valueLabel={currentStatData.valueLabel}
-                  accent={currentStatData.accent}
-                  activeStatTab={activeStatTab}
-                />
+                {isPlayersLoading ? (
+                  <div className="flex justify-center items-center py-16">
+                    <Loader2 className="h-8 w-8 animate-spin text-[color:var(--navy)]" />
+                  </div>
+                ) : (
+                  <PlayerTable
+                    rows={currentStatData.rows}
+                    valueLabel={currentStatData.valueLabel}
+                    accent={currentStatData.accent}
+                    activeStatTab={activeStatTab}
+                  />
+                )}
               </div>
             </div>
           )}
@@ -254,12 +353,11 @@ function ResultsView({
 
   return (
     <div className="space-y-6">
-      {/* Round Filter */}
       <div className="flex flex-wrap justify-center gap-2 border-b border-border pb-4">
         <button
           onClick={() => setSelectedRound("all")}
           className={cn(
-            "px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md transition-colors",
+            "px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md transition-colors cursor-pointer",
             selectedRound === "all"
               ? "bg-[color:var(--navy)] text-white"
               : "bg-secondary text-muted-foreground hover:bg-secondary/80"
@@ -272,7 +370,7 @@ function ResultsView({
             key={r}
             onClick={() => setSelectedRound(r)}
             className={cn(
-              "px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md transition-colors",
+              "px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md transition-colors cursor-pointer",
               selectedRound === r
                 ? "bg-[color:var(--navy)] text-white"
                 : "bg-secondary text-muted-foreground hover:bg-secondary/80"
@@ -283,7 +381,6 @@ function ResultsView({
         ))}
       </div>
 
-      {/* Match Cards List */}
       <div className="grid gap-3 md:grid-cols-2">
         {filtered.map((m) => {
           const homeLogo = getTeamLogo(m.homeTeam);
@@ -294,7 +391,6 @@ function ResultsView({
               key={m.id}
               className="flex items-center justify-between p-4 rounded-xl border border-border bg-card shadow-sm hover:border-[color:var(--navy)]/40 transition-all"
             >
-              {/* Home Team */}
               <div className="flex items-center gap-3 flex-1 justify-end text-right">
                 <span className="font-bold text-sm text-foreground">{m.homeTeam}</span>
                 {homeLogo ? (
@@ -306,7 +402,6 @@ function ResultsView({
                 )}
               </div>
 
-              {/* Score Display */}
               <div className="mx-4 flex flex-col items-center shrink-0">
                 <div className="px-3.5 py-1 rounded-lg bg-[color:var(--navy)] text-white font-black text-base tracking-wider shadow-sm">
                   {m.homeScore} - {m.awayScore}
@@ -316,7 +411,6 @@ function ResultsView({
                 </span>
               </div>
 
-              {/* Away Team */}
               <div className="flex items-center gap-3 flex-1 text-left">
                 {awayLogo ? (
                   <img src={awayLogo} alt={m.awayTeam} className="h-7 w-7 object-contain shrink-0" />
