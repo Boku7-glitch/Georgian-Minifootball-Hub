@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
-import { Search, ChevronUp, ChevronDown, Trophy, BarChart3, Calendar, History, Target, Award, AlertTriangle, ShieldCheck } from "lucide-react";
+import { Search, ChevronUp, ChevronDown, Trophy, BarChart3, Calendar, History, Target, Award, AlertTriangle, ShieldCheck, Loader2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 
-import { standings, playerStats, matchResults, type Standing, type PlayerStat, type MatchResult } from "@/data/mock";
+import { standings, playerStats, type Standing, type PlayerStat, type MatchResult } from "@/data/mock";
+import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { useLang } from "@/lib/i18n";
 import { ScheduleCalendar } from "./ScheduleCalendar";
@@ -24,16 +26,69 @@ const statSubTabs: { key: StatSubTab; labelKey: string; icon: React.ComponentTyp
   { key: "red", labelKey: "stat.redCards", icon: AlertTriangle },
 ];
 
+// Helper to normalize team names (removes FC, FK, SC, punctuation, extra spaces)
+const normalizeTeamName = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/\bfc\b|\bfk\b|\bsc\b|[.\-_]/g, "")
+    .replace(/\s+/g, "")
+    .trim();
+
 export function StatsTabs() {
   const { t } = useLang();
   const [activeTab, setActiveTab] = useState<MainTab>("standings");
   const [activeStatTab, setActiveStatTab] = useState<StatSubTab>("scorers");
 
+  // Fetch completed matches live from Supabase
+  const { data: dbMatches = [], isLoading: isMatchesLoading } = useQuery({
+    queryKey: ["matches", "results"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("matches")
+        .select("*")
+        .eq("status", "completed")
+        .order("round", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching match results:", error);
+        throw error;
+      }
+      return data ?? [];
+    },
+  });
+
+  // Map Supabase snake_case columns to MatchResult format
+  const liveResults: MatchResult[] = useMemo(() => {
+    return dbMatches.map((m: any) => ({
+      id: String(m.id),
+      round: Number(m.round),
+      homeTeam: m.home_team,
+      awayTeam: m.away_team,
+      homeScore: Number(m.home_score ?? 0),
+      awayScore: Number(m.away_score ?? 0),
+      date: m.day,
+      time: m.time,
+      status: m.status,
+    }));
+  }, [dbMatches]);
+
+  // Bulletproof logo finder that matches FC Glovo <-> Glovo
   const getTeamLogo = (teamName: string) => {
-    const standing = standings.find(
-      s => s.club.toLowerCase() === teamName.toLowerCase() ||
-        s.short.toLowerCase() === teamName.toLowerCase()
-    );
+    if (!teamName) return undefined;
+    const target = normalizeTeamName(teamName);
+
+    const standing = standings.find((s) => {
+      const clubName = normalizeTeamName(s.club);
+      const shortName = normalizeTeamName(s.short);
+
+      return (
+        clubName === target ||
+        shortName === target ||
+        clubName.includes(target) ||
+        target.includes(clubName)
+      );
+    });
+
     return standing?.logo;
   };
 
@@ -154,7 +209,15 @@ export function StatsTabs() {
           )}
 
           {/* RESULTS */}
-          {activeTab === "results" && <ResultsView matches={matchResults} getTeamLogo={getTeamLogo} />}
+          {activeTab === "results" && (
+            isMatchesLoading ? (
+              <div className="flex justify-center items-center py-16">
+                <Loader2 className="h-8 w-8 animate-spin text-[color:var(--navy)]" />
+              </div>
+            ) : (
+              <ResultsView matches={liveResults} getTeamLogo={getTeamLogo} />
+            )
+          )}
 
         </div>
       </div>
@@ -177,6 +240,17 @@ function ResultsView({
   const filtered = selectedRound === "all"
     ? matches
     : matches.filter((m) => m.round === selectedRound);
+
+  if (matches.length === 0) {
+    return (
+      <div className="py-12 text-center text-muted-foreground">
+        <History className="h-12 w-12 mx-auto mb-3 opacity-30 text-[color:var(--navy)]" />
+        <h4 className="text-base font-bold text-foreground mb-1">
+          {t("results.noMatches") || "No Completed Matches Found"}
+        </h4>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -227,7 +301,7 @@ function ResultsView({
                   <img src={homeLogo} alt={m.homeTeam} className="h-7 w-7 object-contain shrink-0" />
                 ) : (
                   <div className="h-7 w-7 rounded-full bg-secondary text-[10px] font-bold flex items-center justify-center shrink-0">
-                    {m.homeTeam.slice(0, 2).toUpperCase()}
+                    {m.homeTeam?.slice(0, 2).toUpperCase() || "??"}
                   </div>
                 )}
               </div>
@@ -248,7 +322,7 @@ function ResultsView({
                   <img src={awayLogo} alt={m.awayTeam} className="h-7 w-7 object-contain shrink-0" />
                 ) : (
                   <div className="h-7 w-7 rounded-full bg-secondary text-[10px] font-bold flex items-center justify-center shrink-0">
-                    {m.awayTeam.slice(0, 2).toUpperCase()}
+                    {m.awayTeam?.slice(0, 2).toUpperCase() || "??"}
                   </div>
                 )}
                 <span className="font-bold text-sm text-foreground">{m.awayTeam}</span>

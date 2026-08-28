@@ -1,5 +1,5 @@
 // src/components/site/ScheduleCalendar.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useLang } from '@/lib/i18n';
 
@@ -43,6 +43,7 @@ const logoMap: Record<string, string> = {
   'iberia 1999': iberiaLogo,
   'lentehi': lentehiLogo,
   'letekhi': lentehiLogo,
+  'lentekhi': lentehiLogo,
   'lentechi': lentehiLogo,
   'ლენტეხი': lentehiLogo,
   'mini football': miniFootballLogo,
@@ -75,38 +76,70 @@ const getTeamLogo = (teamName: string) => {
 
 export const ScheduleCalendar: React.FC = () => {
   const { lang } = useLang() as { lang?: string };
-  const [allMatches, setAllMatches] = useState<Match[]>([]);
-  const [selectedRound, setSelectedRound] = useState<number | string>(1);
+  const [upcomingMatches, setUpcomingMatches] = useState<Match[]>([]);
+  const [selectedRound, setSelectedRound] = useState<number | string>(10);
   const [loading, setLoading] = useState<boolean>(true);
 
   const currentLang = lang || (typeof window !== 'undefined' && localStorage.getItem('language')) || 'ka';
   const isEn = currentLang === 'en';
 
   useEffect(() => {
-    async function fetchAllMatches() {
+    async function fetchUpcomingMatches() {
       setLoading(true);
+      // Fetch ONLY matches that are NOT completed
       const { data, error } = await supabase
         .from('matches')
         .select('*')
+        .neq('status', 'completed')
+        .neq('status', 'finished')
         .order('id', { ascending: true });
 
       if (error) {
-        console.error('Error fetching matches:', error);
+        console.error('Error fetching upcoming matches:', error);
       } else if (data && data.length > 0) {
-        setAllMatches(data);
+        setUpcomingMatches(data);
+
+        const rounds = Array.from(new Set(data.map((m: Match) => Number(m.round)))).filter(Boolean);
+        if (rounds.length > 0) {
+          const earliestRound = Math.min(...rounds);
+          setSelectedRound(earliestRound);
+        }
+      } else {
+        setUpcomingMatches([]);
       }
       setLoading(false);
     }
 
-    fetchAllMatches();
+    fetchUpcomingMatches();
   }, []);
 
-  const matches = allMatches.filter((m) => String(m.round) === String(selectedRound));
+  const availableRounds = useMemo(() => {
+    const rounds = Array.from(new Set(upcomingMatches.map((m) => Number(m.round)))).filter(Boolean);
+    return rounds.sort((a, b) => a - b);
+  }, [upcomingMatches]);
+
+  const matches = upcomingMatches.filter((m) => String(m.round) === String(selectedRound));
   const uniqueDays = Array.from(new Set(matches.map((m) => m.day).filter(Boolean)));
 
-  const formatDayName = (day: string) => {
-    if (!day) return '';
-    const lower = day.toLowerCase();
+  const formatDayHeader = (dayStr: string) => {
+    if (!dayStr) return '';
+    const lower = dayStr.toLowerCase();
+
+    const parts = dayStr.split(/[\/\-.]/);
+    if (parts.length === 3) {
+      const d = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10) - 1;
+      let y = parseInt(parts[2], 10);
+      if (y < 100) y += 2000;
+      const dateObj = new Date(y, m, d);
+      if (!isNaN(dateObj.getTime())) {
+        const daysKa = ['კვირა', 'ორშაბათი', 'სამშაბათი', 'ოთხშაბათი', 'ხუთშაბათი', 'პარასკევი', 'შაბათი'];
+        const daysEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const dayName = isEn ? daysEn[dateObj.getDay()] : daysKa[dateObj.getDay()];
+        return `${dayName} — ${dayStr}`;
+      }
+    }
+
     if (isEn) {
       if (lower.includes('შაბათ') || lower.includes('saturday')) return 'Saturday';
       if (lower.includes('კვირ') || lower.includes('sunday')) return 'Sunday';
@@ -114,37 +147,39 @@ export const ScheduleCalendar: React.FC = () => {
       if (lower.includes('sat') || lower.includes('შაბათ')) return 'შაბათი';
       if (lower.includes('sun') || lower.includes('კვირ')) return 'კვირა';
     }
-    return day;
+    return dayStr;
   };
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 space-y-6">
-      {/* Round Selector Tabs */}
-      <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-none border-b border-border">
-        {Array.from({ length: 9 }, (_, i) => i + 1).map((roundNum) => (
-          <button
-            key={roundNum}
-            onClick={() => setSelectedRound(roundNum)}
-            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all whitespace-nowrap ${
-              String(selectedRound) === String(roundNum)
-                ? 'bg-primary text-primary-foreground shadow-md'
-                : 'bg-muted text-muted-foreground hover:bg-accent'
-            }`}
-          >
-            {isEn ? `Round ${roundNum}` : `ტური ${roundNum}`}
-          </button>
-        ))}
+      {/* Sleek Horizontal Scroll Slider for Rounds */}
+      <div className="overflow-x-auto pb-3 pt-1 scroll-smooth [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-secondary/40 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/30 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/50 border-b border-border/40">
+        <div className="flex gap-2 min-w-max pb-1">
+          {availableRounds.map((roundNum) => (
+            <button
+              key={roundNum}
+              onClick={() => setSelectedRound(roundNum)}
+              className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all whitespace-nowrap cursor-pointer ${
+                String(selectedRound) === String(roundNum)
+                  ? 'bg-primary text-primary-foreground shadow-md'
+                  : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
+              }`}
+            >
+              {isEn ? `Round ${roundNum}` : `ტური ${roundNum}`}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Match Schedule Body */}
       {loading ? (
         <div className="text-center py-12 text-muted-foreground">
-          {isEn ? 'Loading...' : 'იტვირთება...'}
+          {isEn ? 'Loading upcoming fixtures...' : 'იტვირთება მომავალი მატჩები...'}
         </div>
       ) : matches.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground bg-card rounded-xl border border-border/50">
           <p className="font-semibold text-base">
-            {isEn ? 'No matches scheduled for this round.' : 'ამ ტურში მატჩები ჯერ არ არის დამატებული.'}
+            {isEn ? 'No upcoming matches scheduled.' : 'მომავალი მატჩები არ არის დაგეგმილი.'}
           </p>
         </div>
       ) : (
@@ -156,7 +191,7 @@ export const ScheduleCalendar: React.FC = () => {
             return (
               <div key={day} className="space-y-3">
                 <h3 className="text-lg font-bold text-primary border-l-4 border-primary pl-3">
-                  {formatDayName(day)}
+                  {formatDayHeader(day)}
                 </h3>
 
                 <div className="grid gap-3">
@@ -182,22 +217,16 @@ export const ScheduleCalendar: React.FC = () => {
                             />
                           ) : (
                             <div className="w-8 h-8 rounded-full bg-secondary text-[10px] font-bold flex items-center justify-center shrink-0">
-                              {match.home_team.slice(0, 2).toUpperCase()}
+                              {match.home_team?.slice(0, 2).toUpperCase() || '??'}
                             </div>
                           )}
                         </div>
 
-                        {/* Time / Score */}
+                        {/* Kick-off Time */}
                         <div className="flex flex-col items-center justify-center w-2/12 px-2">
-                          {match.status === 'finished' ? (
-                            <div className="text-base font-bold text-primary bg-primary/10 px-3 py-1 rounded-md">
-                              {match.home_score} - {match.away_score}
-                            </div>
-                          ) : (
-                            <div className="text-xs sm:text-sm font-medium bg-muted px-3 py-1 rounded-md text-muted-foreground whitespace-nowrap">
-                              {match.time}
-                            </div>
-                          )}
+                          <div className="text-xs sm:text-sm font-bold bg-muted px-3 py-1.5 rounded-md text-foreground shadow-xs whitespace-nowrap">
+                            {match.time}
+                          </div>
                         </div>
 
                         {/* Away Team */}
@@ -210,7 +239,7 @@ export const ScheduleCalendar: React.FC = () => {
                             />
                           ) : (
                             <div className="w-8 h-8 rounded-full bg-secondary text-[10px] font-bold flex items-center justify-center shrink-0">
-                              {match.away_team.slice(0, 2).toUpperCase()}
+                              {match.away_team?.slice(0, 2).toUpperCase() || '??'}
                             </div>
                           )}
                           <span className="font-semibold text-sm sm:text-base">
