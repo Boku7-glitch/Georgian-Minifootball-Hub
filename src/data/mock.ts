@@ -103,15 +103,21 @@ export const playerStats: PlayerStat[] = [
   { id: 37, name: "სანდრო ობოლაძე", team: "iberia 1999", position: "მოთამაშე" },
 
   // --- OLD STARS ---
-  { id: 7, name: "გიორგი ქურდაძე", team: "old stars", position: "მოთამაშე" },
+  { id: 1, name: "გიორგი ნადირაძე", team: "old stars", position: "მეკარე" },
+  { id: 12, name: "ფაცი ბაქრაძე", team: "old stars", position: "მეკარე" },
   { id: 5, name: "ვანო ბექაური", team: "old stars", position: "მოთამაშე" },
-  { id: 1, name: "გიორგი ზუნტუროვი", team: "old stars", position: "მეკარე" },
-  { id: 18, name: "ლუკა ელიოზარაშვილი", team: "old stars", position: "მოთამაშე" },
-  { id: 33, name: "ბექა მურღული", team: "old stars", position: "მოთამაშე" },
-  { id: 6, name: "შაკო გუგუნავა", team: "old stars", position: "მოთამაშე" },
+  { id: 8, name: "ბექა ბექაური", team: "old stars", position: "მოთამაშე" },
+  { id: 7, name: "გიორგი ქურდაძე", team: "old stars", position: "მოთამაშე" },
   { id: 3, name: "ლევან ქურდაძე", team: "old stars", position: "მოთამაშე" },
+  { id: 4, name: "გიორგი ზუნტუროვი", team: "old stars", position: "მოთამაშე" },
+  { id: 6, name: "შაკო გუგუნავა", team: "old stars", position: "მოთამაშე" },
+  { id: 9, name: "დათო კაბაური", team: "old stars", position: "მოთამაშე" },
   { id: 28, name: "ვაკო გახარია", team: "old stars", position: "მოთამაშე" },
-  { id: 28, name: "ბექა ბექაური", team: "old stars", position: "მოთამაშე" },
+  { id: 10, name: "ნიკა მნათობიშვილი", team: "old stars", position: "მოთამაშე" },
+  { id: 11, name: "ლაშა ფოფხაძე", team: "old stars", position: "მოთამაშე" },
+  { id: 33, name: "ბექა მურღული", team: "old stars", position: "მოთამაშე" },
+  { id: 14, name: "გარი წერეთელი", team: "old stars", position: "მოთამაშე" },
+  { id: 18, name: "ლუკა ცუციშვილი", team: "old stars", position: "მოთამაშე" },
 
   // --- DERBY ---
   { id: 31, name: "ვასიკო შერაზადიშვილი", team: "derby", position: "მეკარე" },
