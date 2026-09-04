@@ -97,12 +97,23 @@ export const ScheduleCalendar: React.FC = () => {
       if (error) {
         console.error('Error fetching upcoming matches:', error);
       } else if (data && data.length > 0) {
-        setUpcomingMatches(data);
+        // Exclude any match that already has a score or is completed
+        const upcomingOnly = data.filter(
+          (m: any) =>
+            m.status !== 'completed' &&
+            m.status !== 'finished' &&
+            (m.home_score === null || m.home_score === undefined) &&
+            (m.away_score === null || m.away_score === undefined)
+        );
 
-        const rounds = Array.from(new Set(data.map((m: Match) => Number(m.round)))).filter(Boolean);
+        setUpcomingMatches(upcomingOnly);
+
+        const rounds = Array.from(new Set(upcomingOnly.map((m: Match) => Number(m.round)))).filter(Boolean);
         if (rounds.length > 0) {
           const earliestRound = Math.min(...rounds);
           setSelectedRound(earliestRound);
+        } else {
+          setSelectedRound('');
         }
       } else {
         setUpcomingMatches([]);
