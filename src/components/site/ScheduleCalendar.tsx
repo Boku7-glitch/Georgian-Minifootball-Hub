@@ -165,12 +165,12 @@ export const ScheduleCalendar: React.FC = () => {
     <div className="w-full max-w-4xl mx-auto p-4 space-y-6">
       {/* Sleek Horizontal Scroll Slider for Rounds */}
       <div className="overflow-x-auto pb-3 pt-1 scroll-smooth [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-secondary/40 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/30 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/50 border-b border-border/40">
-        <div className="flex gap-2 min-w-max pb-1">
+        <div className="flex items-center justify-center gap-2 min-w-full w-max pb-1 px-1">
           {availableRounds.map((roundNum) => (
             <button
               key={roundNum}
               onClick={() => setSelectedRound(roundNum)}
-              className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                 String(selectedRound) === String(roundNum)
                   ? 'bg-primary text-primary-foreground shadow-md'
                   : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
