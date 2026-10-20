@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, Facebook, Instagram, Youtube } from "lucide-react";
+import { Menu, X, Facebook, Instagram } from "lucide-react";
 import { miniFootballLogo } from "@/assets/logos";
 import { useLang } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -83,9 +83,24 @@ export function Header() {
             ))}
           </div>
           <div className="flex items-center gap-2 text-white/70">
-            <a href="#" aria-label="Facebook" className="hover:text-[color:var(--brand-red)] transition"><Facebook className="h-4 w-4" /></a>
-            <a href="#" aria-label="Instagram" className="hover:text-[color:var(--brand-red)] transition"><Instagram className="h-4 w-4" /></a>
-            <a href="#" aria-label="YouTube" className="hover:text-[color:var(--brand-red)] transition"><Youtube className="h-4 w-4" /></a>
+            <a
+              href="https://www.facebook.com/minifootball.com.ge"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              className="hover:text-[color:var(--brand-red)] transition"
+            >
+              <Facebook className="h-4 w-4" />
+            </a>
+            <a
+              href="https://www.instagram.com/minifootball.ge/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="hover:text-[color:var(--brand-red)] transition"
+            >
+              <Instagram className="h-4 w-4" />
+            </a>
           </div>
         </div>
 

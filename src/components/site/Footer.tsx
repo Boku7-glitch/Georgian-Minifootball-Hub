@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Instagram, Mail, Phone } from "lucide-react";
 import { miniFootballLogo } from "@/assets/logos";
 
 export function Footer() {
@@ -27,18 +27,38 @@ export function Footer() {
         <div>
           <h4 className="text-white font-display text-xl mb-4 uppercase tracking-wider">Contact</h4>
           <ul className="space-y-3 text-sm">
-            <li className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 text-[color:var(--brand-red)]" /> 76 Chavchavadze Ave, Tbilisi, Georgia</li>
-            <li className="flex items-start gap-2"><Phone className="h-4 w-4 mt-0.5 text-[color:var(--brand-red)]" /> +995 32 2 00 00 00</li>
-            <li className="flex items-start gap-2"><Mail className="h-4 w-4 mt-0.5 text-[color:var(--brand-red)]" /> info@gmf.ge</li>
+            <li className="flex items-start gap-2">
+              <Phone className="h-4 w-4 mt-0.5 text-[color:var(--brand-red)]" />
+              <a href="tel:+995558167651" className="hover:text-[color:var(--brand-red)] transition">558 16 76 51</a>
+            </li>
+            <li className="flex items-start gap-2">
+              <Mail className="h-4 w-4 mt-0.5 text-[color:var(--brand-red)]" />
+              <a href="mailto:minifootball.ge@gmail.com" className="hover:text-[color:var(--brand-red)] transition">minifootball.ge@gmail.com</a>
+            </li>
           </ul>
         </div>
 
         <div>
           <h4 className="text-white font-display text-xl mb-4 uppercase tracking-wider">Follow Us</h4>
           <div className="flex items-center gap-3">
-            <a href="#" aria-label="Facebook" className="h-10 w-10 rounded-full bg-white/10 hover:bg-[color:var(--brand-red)] flex items-center justify-center transition"><Facebook className="h-4 w-4" /></a>
-            <a href="#" aria-label="Instagram" className="h-10 w-10 rounded-full bg-white/10 hover:bg-[color:var(--brand-red)] flex items-center justify-center transition"><Instagram className="h-4 w-4" /></a>
-            <a href="#" aria-label="YouTube" className="h-10 w-10 rounded-full bg-white/10 hover:bg-[color:var(--brand-red)] flex items-center justify-center transition"><Youtube className="h-4 w-4" /></a>
+            <a
+              href="https://www.facebook.com/minifootball.com.ge"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook — საქართველოს მინი ფეხბურთის ასოციაცია - Georgian Mini Football Association"
+              className="h-10 w-10 rounded-full bg-white/10 hover:bg-[color:var(--brand-red)] flex items-center justify-center transition"
+            >
+              <Facebook className="h-4 w-4" />
+            </a>
+            <a
+              href="https://www.instagram.com/minifootball.ge/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram — minifootball.ge"
+              className="h-10 w-10 rounded-full bg-white/10 hover:bg-[color:var(--brand-red)] flex items-center justify-center transition"
+            >
+              <Instagram className="h-4 w-4" />
+            </a>
           </div>
         </div>
       </div>
