@@ -100,6 +100,7 @@ export const ScheduleCalendar: React.FC = () => {
         // Exclude any match that already has a score or is completed
         const upcomingOnly = data.filter(
           (m: any) =>
+            Number(m.round) > 18 &&
             m.status !== 'completed' &&
             m.status !== 'finished' &&
             (m.home_score === null || m.home_score === undefined) &&

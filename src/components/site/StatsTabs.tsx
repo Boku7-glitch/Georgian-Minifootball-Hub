@@ -134,17 +134,19 @@ export function StatsTabs() {
   });
 
   const liveResults: MatchResult[] = useMemo(() => {
-    return dbMatches.map((m: any) => ({
-      id: String(m.id),
-      round: Number(m.round),
-      homeTeam: m.home_team,
-      awayTeam: m.away_team,
-      homeScore: Number(m.home_score ?? 0),
-      awayScore: Number(m.away_score ?? 0),
-      date: m.day,
-      time: m.time,
-      status: m.status,
-    }));
+    return dbMatches
+      .filter((m: any) => m.home_score !== null && m.away_score !== null)
+      .map((m: any) => ({
+        id: String(m.id),
+        round: Number(m.round),
+        homeTeam: m.home_team,
+        awayTeam: m.away_team,
+        homeScore: Number(m.home_score ?? 0),
+        awayScore: Number(m.away_score ?? 0),
+        date: m.day,
+        time: m.time,
+        status: m.status,
+      }));
   }, [dbMatches]);
 
   // 3. Live Player Statistics from Supabase

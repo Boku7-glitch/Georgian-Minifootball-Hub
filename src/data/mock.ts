@@ -61,16 +61,16 @@ export type Standing = {
 };
 
 export const standings: Standing[] = [
-  { pos: 1, club: "Old Stars", short: "OS", color: "#D71920", logo: oldStarsLogo, played: 15, w: 13, d: 0, l: 2, gf: 74, ga: 35, pts: 39 },
-  { pos: 2, club: "Everstone", short: "EV", color: "#0B1F3A", logo: everstoneLogo, played: 15, w: 10, d: 2, l: 3, gf: 59, ga: 27, pts: 32 },
-  { pos: 3, club: "Iberia 1999", short: "IB", color: "#1E40AF", logo: iberiaLogo, played: 15, w: 10, d: 1, l: 4, gf: 69, ga: 51, pts: 31 },
-  { pos: 4, club: "Saburtalo", short: "SA", color: "#F59E0B", logo: saburtaloLogo, played: 15, w: 7, d: 4, l: 4, gf: 56, ga: 49, pts: 25 },
-  { pos: 5, club: "Glovo", short: "FG", color: "#FFC244", logo: glovoLogo, played: 15, w: 7, d: 1, l: 7, gf: 64, ga: 48, pts: 22 },
-  { pos: 6, club: "GFDF", short: "GD", color: "#059669", logo: gfdfLogo, played: 15, w: 7, d: 1, l: 7, gf: 63, ga: 48, pts: 22 },
-  { pos: 7, club: "Grand Avlabari", short: "GA", color: "#DC2626", logo: avlabariLogo, played: 15, w: 3, d: 4, l: 8, gf: 48, ga: 72, pts: 13 },
-  { pos: 8, club: "Derby", short: "DE", color: "#475569", logo: derbyLogo, played: 15, w: 3, d: 4, l: 8, gf: 51, ga: 86, pts: 13 },
-  { pos: 9, club: "Adjara Group", short: "AG", color: "#0EA5E9", logo: ajaraLogo, played: 15, w: 3, d: 2, l: 10, gf: 38, ga: 64, pts: 11 },
-  { pos: 10, club: "Lentekhi", short: "LE", color: "#92400E", logo: lentehiLogo, played: 15, w: 2, d: 1, l: 12, gf: 46, ga: 88, pts: 7 },
+  { pos: 1, club: "Old Stars", short: "OS", color: "#D71920", logo: oldStarsLogo, played: 18, w: 14, d: 1, l: 3, gf: 94, ga: 51, pts: 43 },
+  { pos: 2, club: "Iberia 1999", short: "IB", color: "#1E40AF", logo: iberiaLogo, played: 17, w: 12, d: 1, l: 4, gf: 84, ga: 61, pts: 37 },
+  { pos: 3, club: "Everstone", short: "EV", color: "#0B1F3A", logo: everstoneLogo, played: 16, w: 11, d: 2, l: 3, gf: 64, ga: 27, pts: 35 },
+  { pos: 4, club: "GFDF", short: "GD", color: "#059669", logo: gfdfLogo, played: 18, w: 8, d: 1, l: 9, gf: 72, ga: 58, pts: 25 },
+  { pos: 5, club: "Saburtalo", short: "SA", color: "#F59E0B", logo: saburtaloLogo, played: 15, w: 7, d: 4, l: 4, gf: 56, ga: 49, pts: 25 },
+  { pos: 6, club: "Glovo", short: "FG", color: "#FFC244", logo: glovoLogo, played: 17, w: 7, d: 2, l: 8, gf: 74, ga: 60, pts: 23 },
+  { pos: 7, club: "Grand Avlabari", short: "GA", color: "#DC2626", logo: avlabariLogo, played: 18, w: 5, d: 4, l: 9, gf: 64, ga: 90, pts: 19 },
+  { pos: 8, club: "Adjara Group", short: "AG", color: "#0EA5E9", logo: ajaraLogo, played: 18, w: 5, d: 2, l: 11, gf: 51, ga: 72, pts: 17 },
+  { pos: 9, club: "Derby", short: "DE", color: "#475569", logo: derbyLogo, played: 16, w: 3, d: 4, l: 9, gf: 54, ga: 93, pts: 13 },
+  { pos: 10, club: "Lentekhi", short: "LE", color: "#92400E", logo: lentehiLogo, played: 17, w: 2, d: 1, l: 14, gf: 50, ga: 102, pts: 7 },
 ];
 
 export type PlayerStat = {
@@ -102,6 +102,9 @@ export const playerStats: PlayerStat[] = [
   { id: 28, name: "გიორგი ობოლაძე", team: "iberia 1999", position: "მოთამაშე" },
   { id: 37, name: "სანდრო ობოლაძე", team: "iberia 1999", position: "მოთამაშე" },
   { id: 23, name: "გიორგი შეყილაძე", team: "iberia 1999", position: "მოთამაშე" },
+  { id: 9, name: "ნიკოლოზ ხარაძე", team: "iberia 1999", position: "თავდამსხმელი" },
+  { id: 8, name: "ნიკა ჩალაძე", team: "iberia 1999", position: "თავდამსხმელი" },
+  { id: 5, name: "ირაკლი კუპატაძე", team: "iberia 1999", position: "ნახევარმცველი" },
 
   // --- OLD STARS ---
   { id: 1, name: "გიორგი ნადირაძე", team: "old stars", position: "მეკარე" },
@@ -390,4 +393,20 @@ export const matchResults: MatchResult[] = [
   { id: "27", homeTeam: "Grand Avlabari", awayTeam: "Lentekhi", homeScore: 4, awayScore: 8, date: "2026-09-26", round: "Matchday 15" },
   { id: "28", homeTeam: "Adjara Group", awayTeam: "Iberia 1999", homeScore: 4, awayScore: 5, date: "2026-09-27", round: "Matchday 15" },
   { id: "29", homeTeam: "Derby", awayTeam: "Old Stars", homeScore: 1, awayScore: 4, date: "2026-09-27", round: "Matchday 15" },
+
+  // --- MATCHDAY 16 ---
+  { id: "30", homeTeam: "Lentekhi", awayTeam: "GFDF", homeScore: 2, awayScore: 3, date: "2026-10-04", round: "Matchday 16" },
+  { id: "31", homeTeam: "Everstone", awayTeam: "Adjara Group", homeScore: 5, awayScore: 0, date: "2026-10-04", round: "Matchday 16" },
+  { id: "32", homeTeam: "Old Stars", awayTeam: "Grand Avlabari", homeScore: 8, awayScore: 3, date: "2026-10-04", round: "Matchday 16" },
+
+  // --- MATCHDAY 17 ---
+  { id: "33", homeTeam: "Old Stars", awayTeam: "Glovo", homeScore: 5, awayScore: 5, date: "2026-10-11", round: "Matchday 17" },
+  { id: "34", homeTeam: "Grand Avlabari", awayTeam: "GFDF", homeScore: 6, awayScore: 5, date: "2026-10-11", round: "Matchday 17" },
+  { id: "35", homeTeam: "Adjara Group", awayTeam: "Lentekhi", homeScore: 11, awayScore: 2, date: "2026-10-10", round: "Matchday 17" },
+  { id: "36", homeTeam: "Derby", awayTeam: "Iberia 1999", homeScore: 3, awayScore: 7, date: "2026-10-10", round: "Matchday 17" },
+
+  // --- MATCHDAY 18 ---
+  { id: "37", homeTeam: "Glovo", awayTeam: "Grand Avlabari", homeScore: 5, awayScore: 7, date: "2026-10-17", round: "Matchday 18" },
+  { id: "38", homeTeam: "GFDF", awayTeam: "Adjara Group", homeScore: 1, awayScore: 2, date: "2026-10-18", round: "Matchday 18" },
+  { id: "39", homeTeam: "Iberia 1999", awayTeam: "Old Stars", homeScore: 8, awayScore: 7, date: "2026-10-18", round: "Matchday 18" },
 ];
