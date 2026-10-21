@@ -514,8 +514,6 @@ function StandingsTable({ rows }: { rows: Standing[] }) {
               zoneColor = "border-l-transparent";
             } else if (r.pos === 8 || r.pos === 9) {
               zoneColor = "border-l-amber-400";
-            } else if (r.pos === 10) {
-              zoneColor = "border-l-red-500";
             }
 
             return (
@@ -567,7 +565,6 @@ function StandingsTable({ rows }: { rows: Standing[] }) {
         <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-emerald-500" /> {t("standings.pos12")}</span>
         <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-sky-500" /> {t("standings.pos36")}</span>
         <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-amber-400" /> {t("standings.pos89")}</span>
-        <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-red-500" /> {t("standings.pos10")}</span>
       </div>
     </>
   );

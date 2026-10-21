@@ -46,7 +46,6 @@ const dict: Dict = {
   "standings.pos12": { en: "1st - 2nd Place", ka: "1 - მე-2 ადგილი" },
   "standings.pos36": { en: "3rd - 6th Place", ka: "მე-3 - მე-6 ადგილი" },
   "standings.pos89": { en: "8th - 9th Place", ka: "მე-8 - მე-9 ადგილი" },
-  "standings.pos10": { en: "10th Place", ka: "მე-10 ადგილი" },
 
   // Calendars & Results
   "calendars.empty": { en: "Calendars Coming Soon", ka: "კალენდარი მალე დაემატება" },
