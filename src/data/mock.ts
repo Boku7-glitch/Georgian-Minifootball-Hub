@@ -61,15 +61,15 @@ export type Standing = {
 };
 
 export const standings: Standing[] = [
-  { pos: 1, club: "Old Stars", short: "OS", color: "#D71920", logo: oldStarsLogo, played: 18, w: 14, d: 1, l: 3, gf: 94, ga: 51, pts: 43 },
-  { pos: 2, club: "Iberia 1999", short: "IB", color: "#1E40AF", logo: iberiaLogo, played: 17, w: 12, d: 1, l: 4, gf: 84, ga: 61, pts: 37 },
-  { pos: 3, club: "Everstone", short: "EV", color: "#0B1F3A", logo: everstoneLogo, played: 16, w: 11, d: 2, l: 3, gf: 64, ga: 27, pts: 35 },
-  { pos: 4, club: "GFDF", short: "GD", color: "#059669", logo: gfdfLogo, played: 18, w: 8, d: 1, l: 9, gf: 72, ga: 58, pts: 25 },
-  { pos: 5, club: "Glovo", short: "FG", color: "#FFC244", logo: glovoLogo, played: 17, w: 7, d: 2, l: 8, gf: 74, ga: 60, pts: 23 },
-  { pos: 6, club: "Grand Avlabari", short: "GA", color: "#DC2626", logo: avlabariLogo, played: 18, w: 5, d: 4, l: 9, gf: 64, ga: 90, pts: 19 },
-  { pos: 7, club: "Adjara Group", short: "AG", color: "#0EA5E9", logo: ajaraLogo, played: 18, w: 5, d: 2, l: 11, gf: 51, ga: 72, pts: 17 },
-  { pos: 8, club: "Derby", short: "DE", color: "#475569", logo: derbyLogo, played: 16, w: 3, d: 4, l: 9, gf: 54, ga: 93, pts: 13 },
-  { pos: 9, club: "Lentekhi", short: "LE", color: "#92400E", logo: lentehiLogo, played: 17, w: 2, d: 1, l: 14, gf: 50, ga: 102, pts: 7 },
+  { pos: 1, club: "Old Stars", short: "OS", color: "#D71920", logo: oldStarsLogo, played: 18, w: 14, d: 1, l: 3, gf: 98, ga: 55, pts: 43 },
+  { pos: 2, club: "Everstone", short: "EV", color: "#0B1F3A", logo: everstoneLogo, played: 18, w: 13, d: 2, l: 3, gf: 75, ga: 27, pts: 41 },
+  { pos: 3, club: "Iberia 1999", short: "IB", color: "#1E40AF", logo: iberiaLogo, played: 18, w: 13, d: 1, l: 4, gf: 90, ga: 62, pts: 40 },
+  { pos: 4, club: "Glovo", short: "FG", color: "#FFC244", logo: glovoLogo, played: 18, w: 9, d: 2, l: 7, gf: 81, ga: 56, pts: 29 },
+  { pos: 5, club: "GFDF", short: "GD", color: "#059669", logo: gfdfLogo, played: 18, w: 9, d: 0, l: 9, gf: 70, ga: 51, pts: 27 },
+  { pos: 6, club: "Grand Avlabari", short: "GA", color: "#DC2626", logo: avlabariLogo, played: 18, w: 7, d: 3, l: 8, gf: 72, ga: 85, pts: 24 },
+  { pos: 7, club: "Adjara Group", short: "AG", color: "#0EA5E9", logo: ajaraLogo, played: 18, w: 7, d: 2, l: 9, gf: 60, ga: 63, pts: 23 },
+  { pos: 8, club: "Derby", short: "DE", color: "#475569", logo: derbyLogo, played: 18, w: 5, d: 3, l: 10, gf: 57, ga: 92, pts: 18 },
+  { pos: 9, club: "Lentekhi", short: "LE", color: "#92400E", logo: lentehiLogo, played: 18, w: 4, d: 0, l: 14, gf: 64, ga: 106, pts: 12 },
 ];
 
 export type PlayerStat = {
