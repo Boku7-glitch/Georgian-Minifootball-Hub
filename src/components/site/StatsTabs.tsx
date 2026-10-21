@@ -102,20 +102,22 @@ export function StatsTabs() {
   });
 
   const liveStandings: Standing[] = useMemo(() => {
-    return dbStandings.map((s: any) => ({
-      pos: Number(s.pos),
-      club: s.club,
-      short: s.short || s.club.slice(0, 2).toUpperCase(),
-      color: s.color || "#0B1F3A",
-      played: Number(s.played ?? 0),
-      w: Number(s.w ?? 0),
-      d: Number(s.d ?? 0),
-      l: Number(s.l ?? 0),
-      gf: Number(s.gf ?? 0),
-      ga: Number(s.ga ?? 0),
-      pts: Number(s.pts ?? 0),
-      logo: getTeamLogo(s.club),
-    }));
+    return dbStandings
+      .filter((s: any) => !String(s.club || "").toLowerCase().includes("saburtalo"))
+      .map((s: any, index: number) => ({
+        pos: index + 1,
+        club: s.club,
+        short: s.short || s.club.slice(0, 2).toUpperCase(),
+        color: s.color || "#0B1F3A",
+        played: Number(s.played ?? 0),
+        w: Number(s.w ?? 0),
+        d: Number(s.d ?? 0),
+        l: Number(s.l ?? 0),
+        gf: Number(s.gf ?? 0),
+        ga: Number(s.ga ?? 0),
+        pts: Number(s.pts ?? 0),
+        logo: getTeamLogo(s.club),
+      }));
   }, [dbStandings]);
 
   // 2. Live Matches / Results from Supabase
